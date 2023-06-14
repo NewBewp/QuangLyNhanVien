@@ -25,6 +25,22 @@ function getThongTin() {
 }
 getElement("#btnThemNV").onclick = getThongTin;
 
+//Dùng Enter
+var input = document.querySelectorAll("input");
+
+for (var i = 0; i < input.length; i++) {
+    input[i].addEventListener("keypress", function (event) {
+        if (event.keyCode === 13) {
+            getThongTin();
+        }
+    })
+}
+
+
+
+//
+
+
 
 //lưu xuống local
 function setLocalStorage() {
@@ -49,17 +65,16 @@ function getLocalStorage() {
         for (var i = 0; i < pareData.length; i++) {
             var nv = pareData[i]
             //tạo lại đối tượng Nhân viên từ NhanVien
-            var nhanVien = new NhanVien(nv.tknv, nv.name,nv.email, nv.password, nv.datepicker, nv.luongCB, nv.chucvu, nv.gioLam)
+            var nhanVien = new NhanVien(nv.tknv, nv.name, nv.email, nv.password, nv.datepicker, nv.luongCB, nv.chucvu, nv.gioLam)
 
             dsnvtemp.push(nhanVien)
         }
 
-        dsnv.arrNV=dsnvtemp;
+        dsnv.arrNV = dsnvtemp;
 
         displayThongTin();
     }
 }
-
 
 //hiện thông tin lên table
 function displayThongTin() { //thiếu xếp loại nhân viên
@@ -73,13 +88,17 @@ function displayThongTin() { //thiếu xếp loại nhân viên
                
                 <td>${dsnv.arrNV[i].datepicker}</td>
                 <td>${dsnv.arrNV[i].chucvu}</td>
-                <td>${dsnv.arrNV[i].luongCB}</td>
-                                
-            </tr>
+                <td>${dsnv.arrNV[i].luongCB}</td>   
+                <td> Xếp loại </td>            
+                <td> 
+                    <button id="deleteNV">Xóa</button> 
+                    <button id="editNV">Cập nhật</button>                     
+                </td>
+            </td>
         `
     }
 
     getElement("#tableDanhSach").innerHTML = content
 }
 
-function tinhLuong()
+// function tinhLuong()
