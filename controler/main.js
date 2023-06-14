@@ -30,17 +30,11 @@ var input = document.querySelectorAll("input");
 
 for (var i = 0; i < input.length; i++) {
     input[i].addEventListener("keypress", function (event) {
-        if (event.keyCode === 13) {
+        if (event.keyCode === 13) {  //
             getThongTin();
         }
     })
 }
-
-
-
-//
-
-
 
 //lưu xuống local
 function setLocalStorage() {
