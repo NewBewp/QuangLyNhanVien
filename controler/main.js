@@ -25,7 +25,18 @@ function getThongTin() { //#1
 
     displayThongTin();
 
-    return nhanVien;
+    var isValid = true;
+
+    isValid &= kiemTraChuoi(nhanVien.tknv,4,6,"#tbTKNV", "Tài khoản từ 4 đến 6 ký tự")&&
+        kiemTraChuoi(nhanVien.tknv,1,undefined,"#tbTKNV", "Mã sinh viên không được để trống")
+
+    if(isValid){
+        return nhanVien
+    }else{
+        return undefined;
+    }
+
+    // return isValid ? nhanVien :undefined;
 }
 
 getElement("#btnThemNV").onclick = function () {

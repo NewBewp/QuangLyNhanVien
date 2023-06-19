@@ -10,7 +10,9 @@
 
 function kiemTraChuoi(value,minLength,maxLength,selector,messErr){
     if(value.trim().length < Number(minLength) || value.trim().length > Number(maxLength) ){
-        getElement(selector).innerHTML = messErr;
+        getElement("#tbTKNV").style.display = "block"
+        getElement(selector).innerHTML =  messErr;
+        
         return false;
     }else{
         getElement(selector).innerHTML = '';
