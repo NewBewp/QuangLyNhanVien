@@ -27,12 +27,13 @@ function getThongTin() { //#1
 
     var isValid = true;
 
-    isValid &= kiemTraChuoi(nhanVien.tknv,4,6,"#tbTKNV", "Tài khoản từ 4 đến 6 ký tự")&&
-        kiemTraChuoi(nhanVien.tknv,1,undefined,"#tbTKNV", "Mã sinh viên không được để trống")
+    isValid &= kiemTraChuoi(nhanVien.tknv, 1, undefined, "#tbTKNV", "Mã sinh viên không được để trống") &&
+        kiemTraChuoi(nhanVien.tknv, 4, 6, "#tbTKNV", "Tài khoản từ 4 đến 6 ký tự")
 
-    if(isValid){
+
+    if (isValid) {
         return nhanVien
-    }else{
+    } else {
         return undefined;
     }
 
@@ -60,7 +61,7 @@ getElement("#btnThemNV").onclick = function () {
 //     })
 // }
 
-function displayThongTin(arrNV = dsnv.arrNV) { //thiếu xếp loại nhân viên
+function displayThongTin(arrNV = dsnv.arrNV) {
     var content = '';
     for (var i = 0; i < dsnv.arrNV.length; i++) {
         nv = arrNV[i]
@@ -72,7 +73,7 @@ function displayThongTin(arrNV = dsnv.arrNV) { //thiếu xếp loại nhân viê
                 <td>${nv.datepicker}</td>
                 <td>${nv.chucvu}</td>
                 <td>${nv.tinhLuong()}</td>   
-                <td>${nv.xepLoai()} </td>            
+                <td id="xeploai">${nv.xepLoai()} </td>            
                 <td> 
                     <button class="btn btn-success mr-3" id="btnEdit"
                             onclick = "updateNV('${nv.tknv}')" data-toggle="modal" data-target="#myModal">
@@ -146,12 +147,23 @@ function updateNV(tknv) {
 
 }
 
-//C
+//Set onclick 
 getElement("#btnCapNhat").onclick = function () {
     var nhanVien = getThongTin(true);
     dsnv.editNV(nhanVien);
     displayThongTin();
     setLocalStorage();
-
-    // getElement("#form").reset();
 }
+
+getElement("#searchName").addEventListener("keyup", function () {
+    var valueSearch = getElement("#searchName").value.toLowerCase();
+    
+    var arrNVSearch = [];
+    for (var i = 0; i < dsnv.arrNV.length; i++) {
+        var xepLoai = dsnv.arrNV[i].xepLoai().toLowerCase()
+        if (xepLoai.indexOf(valueSearch) !== -1) {
+            arrNVSearch.push(dsnv.arrNV[i])
+        }
+    }
+    displayThongTin(arrNVSearch);
+})
