@@ -61,9 +61,10 @@ getElement("#btnThemNV").onclick = function () {
 //     })
 // }
 
+//hiển thị bảng thông tin
 function displayThongTin(arrNV = dsnv.arrNV) {
     var content = '';
-    for (var i = 0; i < dsnv.arrNV.length; i++) {
+    for (var i = 0; i < arrNV.length; i++) {
         nv = arrNV[i]
         content += `
             <tr>
@@ -155,13 +156,15 @@ getElement("#btnCapNhat").onclick = function () {
     setLocalStorage();
 }
 
+//Tìm kiểm theo xếp loại
 getElement("#searchName").addEventListener("keyup", function () {
     var valueSearch = getElement("#searchName").value.toLowerCase();
-    
+    console.log("valueSearch: ",valueSearch);
     var arrNVSearch = [];
     for (var i = 0; i < dsnv.arrNV.length; i++) {
-        var xepLoai = dsnv.arrNV[i].xepLoai().toLowerCase()
-        if (xepLoai.indexOf(valueSearch) !== -1) {
+        var xepLoai = (dsnv.arrNV[i].xepLoai()).toLowerCase();
+        // console.log("nv",xepLoai);
+        if (xepLoai.search(valueSearch) !== -1) {
             arrNVSearch.push(dsnv.arrNV[i])
         }
     }
