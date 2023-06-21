@@ -5,31 +5,59 @@ function getElement(selector) {
 var dsnv = new DSNV();
 
 //Lấy thông tin người dùng nhập vào
-function getThongTin() { //#1
+function getThongTin(isEdit) { //#1
 
     var tknv = getElement("#tknv").value;
     var name = getElement("#name").value;
     var email = getElement("#email").value;
     var password = getElement("#password").value;
     var datepicker = getElement("#datepicker").value;
-    var luongCB = +getElement("#luongCB").value;
+    var luongCB = getElement("#luongCB").value;
     var chucvu = getElement("#chucvu").value;
-    var gioLam = +getElement("#gioLam").value;
+    var gioLam = getElement("#gioLam").value;
 
 
     var nhanVien = new NhanVien(tknv, name, email, password, datepicker, luongCB, chucvu, gioLam);
     // console.log(nhanVien);
     // console.log(dsnv.arrNV);
-    setLocalStorage();
-    getLocalStorage();
-
-    displayThongTin();
+   
 
     var isValid = true;
 
-    isValid &= kiemTraChuoi(nhanVien.tknv, 1, undefined, "#tbTKNV", "Mã sinh viên không được để trống") &&
-        kiemTraChuoi(nhanVien.tknv, 4, 6, "#tbTKNV", "Tài khoản từ 4 đến 6 ký tự")
+    //kiểm tra tknv
+    isValid &= kiemTraChuoi(nhanVien.tknv, 1, undefined, "#tbTKNV", "#tbTKNV", "Tài khoản nhân viên không được để trống") &&
+        kiemTraChuoi(nhanVien.tknv, 4, 6, "#tbTKNV", "#tbTKNV", "Tài khoản từ 4 đến 6 ký tự")&&
+        kiemTraTKNV(nhanVien.tknv, dsnv.arrNV, isEdit, "#tbTKNV", "Tài khoản nhân viên này đã tồn tại")
 
+    // // kiểm tra tên nhân viên
+    isValid &= kiemTraChuoi(nhanVien.name, 1, undefined, "#tbTen", "#tbTen", "Tên không được để trống") &&
+        kiemTraPattern(nhanVien.name, "#tbTen", "#tbTen", /^[a-zA-Z_ÀÁÂÃÈÉÊẾÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶ" + "ẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợ" + "ụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/, "Tên chỉ được nhập chữ")
+
+    //kiểm tra email
+    isValid &= kiemTraChuoi(nhanVien.email, 1, undefined, "#tbEmail", "#tbEmail", "Email không được để trống") &&
+        kiemTraPattern(nhanVien.email, "#tbEmail", "#tbEmail", /^\w+([.-]?\w+)@\w+([.-]?\w+)(.\w{2,3})+$/, "Email không đúng định dạng")
+
+    // kiểm tra password
+    isValid &= kiemTraChuoi(nhanVien.password, 1, undefined, "#tbMatKhau", "#tbMatKhau", "Mật khẩu không được để trống") &&
+        kiemTraChuoi(nhanVien.password, 6, 10, "#tbMatKhau", "#tbMatKhau", "Mật khẩu cần 6 đến 10 ký tự") &&
+        kiemTraPattern(nhanVien.password, "#tbMatKhau", "#tbMatKhau", /^(?=.*\d)(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).*$/, "chứa 1 số, 1 ký tự in hoa, 1 ký tự đặc biệt");
+
+    // kiểm tra ngày
+    isValid &= kiemTraChuoi(nhanVien.datepicker, 1, undefined, "#tbNgay", "#tbNgay", "Ngày làm không được để trống") &&
+        kiemTraPattern(nhanVien.datepicker, "#tbNgay", "#tbNgay", /^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/(19|20)\d{2}$/, "Định dạng ngày tháng không hợp lệ");
+
+    // kiểm tra lương
+    isValid &= kiemTraChuoi(nhanVien.luongCB, 1, undefined, "#tbLuongCB", "#tbLuongCB", "Lương không được để trống") &&
+        kiemTraGiaTri(nhanVien.luongCB, 1000000, 20000000, "#tbLuongCB", "#tbLuongCB", "Lương cơ bản từ 1 000 000 đến 20 000 000") &&
+        kiemTraPattern(nhanVien.luongCB, "#tbLuongCB", "#tbLuongCB", /^[0-9]+$/, "Lương chỉ được nhập số ")
+
+    // Kiểm tra chức vụ
+    isValid &= kiemTraChuoi(nhanVien.chucvu, 1, undefined, "#tbChucVu", "#tbChucVu", "Xin hãy chọn chức vụ")
+
+    // kiểm tra số giờ làm
+    isValid &= kiemTraChuoi(nhanVien.gioLam, 1, undefined, "#tbGiolam", "#tbGiolam", "Giờ làm không được để trống") &&
+        kiemTraGiaTri(nhanVien.gioLam, 80, 200, "#tbGiolam", "#tbGiolam", "Giờ làm chỉ được nhập từ 80-200 giờ") &&
+        kiemTraPattern(nhanVien.gioLam, "#tbGiolam", "#tbGiolam", /^[0-9]+$/, "Giờ làm chỉ được nhập số")
 
     if (isValid) {
         return nhanVien
@@ -159,7 +187,7 @@ getElement("#btnCapNhat").onclick = function () {
 //Tìm kiểm theo xếp loại
 getElement("#searchName").addEventListener("keyup", function () {
     var valueSearch = getElement("#searchName").value.toLowerCase();
-    console.log("valueSearch: ",valueSearch);
+    console.log("valueSearch: ", valueSearch);
     var arrNVSearch = [];
     for (var i = 0; i < dsnv.arrNV.length; i++) {
         var xepLoai = (dsnv.arrNV[i].xepLoai()).toLowerCase();
